@@ -6,9 +6,9 @@ namespace TicketOnline.Data
     public class ShowTime
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        public int MovieId { get; set; }
+        public string MovieId { get; set; }
         [ForeignKey("MovieId")]
         public virtual Movie? Movie { get; set; }
         public int RoomNumberId { get; set; }

@@ -5,7 +5,7 @@ namespace TicketOnline.Data
     public class Employee
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         [DataType(DataType.PhoneNumber)]
         public string Cid { get; set; }

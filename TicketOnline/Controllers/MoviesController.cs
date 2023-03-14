@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TicketOnline.Data;
+using TicketOnline.Model;
 
 namespace TicketOnline.Controllers
 {
@@ -43,8 +45,8 @@ namespace TicketOnline.Controllers
 
         // PUT: api/Movies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(int id, Movie movie)
+        [HttpPut("{id}"), Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PutMovie(string id, Movie movie)
         {
             if (id != movie.Id)
             {
@@ -74,17 +76,27 @@ namespace TicketOnline.Controllers
 
         // POST: api/Movies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        [HttpPost, Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Movie>> PostMovie(MovieCreate movie)
         {
-            _context.Movies.Add(movie);
+            Movie movie1 = new Movie() {
+                Id = movie.Id,
+                Name = movie.Name,
+                Title = movie.Title,
+                Director = movie.Director,
+                Genre = movie.Genre,
+                Cast = movie.Cast,
+                ReleaseDate = DateOnly.Parse(movie.ReleaseDate),
+                RunningTime = TimeOnly.Parse(movie.RunningTime)
+            };
+            _context.Movies.Add(movie1);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
         }
 
         // DELETE: api/Movies/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
             var movie = await _context.Movies.FindAsync(id);
@@ -99,7 +111,7 @@ namespace TicketOnline.Controllers
             return NoContent();
         }
 
-        private bool MovieExists(int id)
+        private bool MovieExists(string id)
         {
             return _context.Movies.Any(e => e.Id == id);
         }

@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TicketOnline.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using TicketOnline.Data;
 
 #nullable disable
 
-namespace MoveTheater.Migrations
+namespace TicketOnline.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230311065152_createdb")]
-    partial class createdb
+    [Migration("20230314051311_Createdb")]
+    partial class Createdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,10 @@ namespace MoveTheater.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MoveTheater.Data.Customer", b =>
+            modelBuilder.Entity("TicketOnline.Data.Customer", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp with time zone");
@@ -50,6 +47,10 @@ namespace MoveTheater.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("PhoneConfirm")
                         .HasColumnType("boolean");
@@ -75,13 +76,10 @@ namespace MoveTheater.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Employee", b =>
+            modelBuilder.Entity("TicketOnline.Data.Employee", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -131,13 +129,10 @@ namespace MoveTheater.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Movie", b =>
+            modelBuilder.Entity("TicketOnline.Data.Movie", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("Cast")
                         .IsRequired()
@@ -171,19 +166,17 @@ namespace MoveTheater.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Order", b =>
+            modelBuilder.Entity("TicketOnline.Data.Order", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer");
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("numeric");
@@ -195,19 +188,18 @@ namespace MoveTheater.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.OrderItem", b =>
+            modelBuilder.Entity("TicketOnline.Data.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("numeric");
@@ -221,13 +213,10 @@ namespace MoveTheater.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Product", b =>
+            modelBuilder.Entity("TicketOnline.Data.Product", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("Image")
                         .IsRequired()
@@ -246,7 +235,7 @@ namespace MoveTheater.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Room", b =>
+            modelBuilder.Entity("TicketOnline.Data.Room", b =>
                 {
                     b.Property<int>("RoomNumber")
                         .ValueGeneratedOnAdd()
@@ -259,13 +248,10 @@ namespace MoveTheater.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Seat", b =>
+            modelBuilder.Entity("TicketOnline.Data.Seat", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<int>("RoomNumberId")
                         .HasColumnType("integer");
@@ -283,19 +269,17 @@ namespace MoveTheater.Migrations
                     b.ToTable("Seats");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.ShowTime", b =>
+            modelBuilder.Entity("TicketOnline.Data.ShowTime", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("MovieId")
-                        .HasColumnType("integer");
+                    b.Property<string>("MovieId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("RoomNumberId")
                         .HasColumnType("integer");
@@ -312,19 +296,18 @@ namespace MoveTheater.Migrations
                     b.ToTable("ShowTimes");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Ticket", b =>
+            modelBuilder.Entity("TicketOnline.Data.Ticket", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SeatId")
-                        .HasColumnType("integer");
+                    b.Property<string>("SeatId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -335,9 +318,9 @@ namespace MoveTheater.Migrations
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Order", b =>
+            modelBuilder.Entity("TicketOnline.Data.Order", b =>
                 {
-                    b.HasOne("MoveTheater.Data.Customer", "Customer")
+                    b.HasOne("TicketOnline.Data.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -346,15 +329,15 @@ namespace MoveTheater.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.OrderItem", b =>
+            modelBuilder.Entity("TicketOnline.Data.OrderItem", b =>
                 {
-                    b.HasOne("MoveTheater.Data.Order", "Order")
+                    b.HasOne("TicketOnline.Data.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoveTheater.Data.Product", "Product")
+                    b.HasOne("TicketOnline.Data.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -365,9 +348,9 @@ namespace MoveTheater.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Seat", b =>
+            modelBuilder.Entity("TicketOnline.Data.Seat", b =>
                 {
-                    b.HasOne("MoveTheater.Data.Room", "Room")
+                    b.HasOne("TicketOnline.Data.Room", "Room")
                         .WithMany("Seats")
                         .HasForeignKey("RoomNumberId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -376,15 +359,15 @@ namespace MoveTheater.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.ShowTime", b =>
+            modelBuilder.Entity("TicketOnline.Data.ShowTime", b =>
                 {
-                    b.HasOne("MoveTheater.Data.Movie", "Movie")
+                    b.HasOne("TicketOnline.Data.Movie", "Movie")
                         .WithMany("Showtimes")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoveTheater.Data.Room", "Room")
+                    b.HasOne("TicketOnline.Data.Room", "Room")
                         .WithMany("ShowTimes")
                         .HasForeignKey("RoomNumberId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -395,15 +378,15 @@ namespace MoveTheater.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Ticket", b =>
+            modelBuilder.Entity("TicketOnline.Data.Ticket", b =>
                 {
-                    b.HasOne("MoveTheater.Data.Order", "Order")
+                    b.HasOne("TicketOnline.Data.Order", "Order")
                         .WithMany("Tickets")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoveTheater.Data.Seat", "Seat")
+                    b.HasOne("TicketOnline.Data.Seat", "Seat")
                         .WithMany("Tickets")
                         .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -414,36 +397,36 @@ namespace MoveTheater.Migrations
                     b.Navigation("Seat");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Customer", b =>
+            modelBuilder.Entity("TicketOnline.Data.Customer", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Movie", b =>
+            modelBuilder.Entity("TicketOnline.Data.Movie", b =>
                 {
                     b.Navigation("Showtimes");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Order", b =>
+            modelBuilder.Entity("TicketOnline.Data.Order", b =>
                 {
                     b.Navigation("OrderItems");
 
                     b.Navigation("Tickets");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Product", b =>
+            modelBuilder.Entity("TicketOnline.Data.Product", b =>
                 {
                     b.Navigation("OrderItems");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Room", b =>
+            modelBuilder.Entity("TicketOnline.Data.Room", b =>
                 {
                     b.Navigation("Seats");
 
                     b.Navigation("ShowTimes");
                 });
 
-            modelBuilder.Entity("MoveTheater.Data.Seat", b =>
+            modelBuilder.Entity("TicketOnline.Data.Seat", b =>
                 {
                     b.Navigation("Tickets");
                 });

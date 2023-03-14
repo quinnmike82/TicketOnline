@@ -7,7 +7,7 @@ namespace TicketOnline.Data
     public class Customer
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -20,8 +20,10 @@ namespace TicketOnline.Data
         public string PhoneNumber { get; set; }
         public bool PhoneConfirm { get; set; } = false;
         public decimal Point { get; set; } = 0;
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
 
-        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreateAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdateAt { get; set; }
         //one to many
 

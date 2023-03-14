@@ -7,7 +7,7 @@ namespace TicketOnline.Data
     public class Seat
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public char RowName { get; set; }
         [Required]

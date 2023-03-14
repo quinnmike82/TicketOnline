@@ -5,7 +5,7 @@ namespace TicketOnline.Data
     public class Movie
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]

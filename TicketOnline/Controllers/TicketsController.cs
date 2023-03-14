@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,8 +45,8 @@ namespace TicketOnline.Controllers
 
         // PUT: api/Tickets/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTicket(int id, Ticket ticket)
+        [HttpPut("{id}"), Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PutTicket(string id, Ticket ticket)
         {
             if (id != ticket.Id)
             {
@@ -74,7 +76,7 @@ namespace TicketOnline.Controllers
 
         // POST: api/Tickets
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<ActionResult<Ticket>> PostTicket(Ticket ticket)
         {
             _context.Tickets.Add(ticket);
@@ -84,7 +86,7 @@ namespace TicketOnline.Controllers
         }
 
         // DELETE: api/Tickets/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTicket(int id)
         {
             var ticket = await _context.Tickets.FindAsync(id);
@@ -99,7 +101,7 @@ namespace TicketOnline.Controllers
             return NoContent();
         }
 
-        private bool TicketExists(int id)
+        private bool TicketExists(string id)
         {
             return _context.Tickets.Any(e => e.Id == id);
         }

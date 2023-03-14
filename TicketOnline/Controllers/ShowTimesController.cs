@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,8 +45,8 @@ namespace TicketOnline.Controllers
 
         // PUT: api/ShowTimes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutShowTime(int id, ShowTime showTime)
+        [HttpPut("{id}"), Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PutShowTime(string id, ShowTime showTime)
         {
             if (id != showTime.Id)
             {
@@ -74,7 +76,7 @@ namespace TicketOnline.Controllers
 
         // POST: api/ShowTimes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<ActionResult<ShowTime>> PostShowTime(ShowTime showTime)
         {
             _context.ShowTimes.Add(showTime);
@@ -84,7 +86,7 @@ namespace TicketOnline.Controllers
         }
 
         // DELETE: api/ShowTimes/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteShowTime(int id)
         {
             var showTime = await _context.ShowTimes.FindAsync(id);
@@ -99,9 +101,15 @@ namespace TicketOnline.Controllers
             return NoContent();
         }
 
-        private bool ShowTimeExists(int id)
+        private bool ShowTimeExists(string id)
         {
             return _context.ShowTimes.Any(e => e.Id == id);
+        }
+        [HttpGet("movie/{id}")]
+        public IEnumerable<ShowTime> GetShowTimeByMovieId(string movieId)
+        {
+            var showtimes = _context.ShowTimes.Where(s => s.MovieId == movieId).ToList();
+            return showtimes;
         }
     }
 }

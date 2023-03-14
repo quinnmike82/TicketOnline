@@ -29,7 +29,7 @@ namespace TicketOnline.Controllers
 
         // GET: api/OrderItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderItem>> GetOrderItem(int id)
+        public async Task<ActionResult<OrderItem>> GetOrderItem(string id)
         {
             var orderItem = await _context.OrderItems.FindAsync(id);
 
@@ -44,7 +44,7 @@ namespace TicketOnline.Controllers
         // PUT: api/OrderItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrderItem(int id, OrderItem orderItem)
+        public async Task<IActionResult> PutOrderItem(string id, OrderItem orderItem)
         {
             if (id != orderItem.Id)
             {
@@ -99,7 +99,7 @@ namespace TicketOnline.Controllers
             return NoContent();
         }
 
-        private bool OrderItemExists(int id)
+        private bool OrderItemExists(string id)
         {
             return _context.OrderItems.Any(e => e.Id == id);
         }
