@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 using TicketOnline.Data;
+using TicketOnline.Model;
 
 namespace TicketOnline.Controllers
 {
@@ -77,9 +79,26 @@ namespace TicketOnline.Controllers
         // POST: api/ShowTimes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost, Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ShowTime>> PostShowTime(ShowTime showTime)
+        public async Task<ActionResult<ShowTime>> PostShowTime(ShowTimeCreate showTime)
         {
-            _context.ShowTimes.Add(showTime);
+            var movie = await _context.Movies.FindAsync(showTime.MovieId);
+
+            ShowTime showTime1 = new ShowTime()
+            {
+                Id = showTime.Id,
+                MovieId = showTime.MovieId,
+                RoomNumberId = showTime.RoomNumberId,
+                StartTime = DateTime.Parse(showTime.StartTime).ToUniversalTime(),
+                EndTime = DateTime.Parse(showTime.StartTime).Add(movie.RunningTime.ToTimeSpan()).ToUniversalTime()
+            };
+            var check = await _context.ShowTimes.FirstOrDefaultAsync(s => s.RoomNumberId == showTime1.RoomNumberId && ( (s.StartTime.CompareTo(showTime1.StartTime) < 0 &&
+                                                            s.EndTime.CompareTo(showTime1.StartTime) >= 0) || 
+                                                            (s.StartTime.CompareTo(showTime1.EndTime) < 0 &&
+                                                            s.EndTime.CompareTo(showTime1.EndTime) >= 0)));
+            if(check != null) 
+                return BadRequest();
+            Console.WriteLine(check);
+            _context.ShowTimes.Add(showTime1);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetShowTime", new { id = showTime.Id }, showTime);
@@ -109,6 +128,17 @@ namespace TicketOnline.Controllers
         public IEnumerable<ShowTime> GetShowTimeByMovieId(string movieId)
         {
             var showtimes = _context.ShowTimes.Where(s => s.MovieId == movieId).ToList();
+            return showtimes;
+        }
+        [HttpGet("customer")]
+        public IEnumerable<ShowTime> GetShowTimeForWeek()
+        {
+            DateTime today = DateTime.Today;
+            DateTime weekAfter = today.AddDays(7);
+
+            var showtimes = _context.ShowTimes
+                                  .Where(s => s.StartTime.CompareTo(today.ToUniversalTime()) >= 0 && s.StartTime.CompareTo(weekAfter.ToUniversalTime()) <= 0)
+                                  .ToList();
             return showtimes;
         }
     }

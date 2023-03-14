@@ -15,6 +15,10 @@ namespace TicketOnline.Data
         public readonly SqlMoney Price = 70000;
         [Required]
         public string SeatId { get; set; }
+        [Required]
+        public string ShowtimeId { get; set; }
+        [ForeignKey("ShowtimeId")]
+        public virtual ShowTime? ShowTime { get; set; }
         public virtual Seat? Seat { get; set; }
     }
 }

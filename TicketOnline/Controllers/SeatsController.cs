@@ -105,5 +105,41 @@ namespace TicketOnline.Controllers
         {
             return _context.Seats.Any(e => e.Id == id);
         }
+        [HttpGet("Showtime/{showtimeid}")]
+        public async Task<IEnumerable<Seat>> GetSeatByShowTime(string showtimeid)
+        {
+            var showtime = await _context.ShowTimes.FindAsync(showtimeid);
+            var seatsForShowtime = _context.Seats
+        .Where(s => s.RoomNumberId == showtime.RoomNumberId && s.Tickets.Any(t => t.ShowtimeId == showtimeid))
+        .ToList();
+            return seatsForShowtime;
+        }
+        [HttpPost("addSeat")]
+        public async Task<bool> AddFullSeat()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+
+            for (int k = 1; k <= 5; k++)
+            {
+                for (char c = 'A'; c <= 'M'; c++)
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        Seat seat = new Seat()
+                        {
+                            Id = new string(Enumerable.Repeat(chars, 30)
+                    .Select(s => s[random.Next(s.Length)]).ToArray()),
+                            RoomNumberId = k,
+                            SeatNumber = i,
+                            RowName = c,
+                        };
+                        _context.Seats.Add(seat);
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

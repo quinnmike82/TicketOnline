@@ -32,6 +32,9 @@ namespace TicketOnline.Data
             modelBuilder.Entity<Employee>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+            modelBuilder.Entity<Ticket>()
+        .HasIndex(b => new { b.SeatId, b.ShowtimeId })
+        .IsUnique();
         }
     }
 }

@@ -18,6 +18,6 @@ namespace TicketOnline.Data
 
         public DateTime EndTime { get; set; }
 
-
+        public virtual ICollection<Seat>? Seats { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using TicketOnline.Data;
 
 namespace TicketOnline.Controllers
@@ -102,6 +103,11 @@ namespace TicketOnline.Controllers
         private bool OrderItemExists(string id)
         {
             return _context.OrderItems.Any(e => e.Id == id);
+        }
+        [HttpGet("order/{orderid}")]
+        public IEnumerable<OrderItem> GetItemByOrderId(string orderid)
+        {
+            return _context.OrderItems.Where(e => e.OrderId == orderid).ToList();
         }
     }
 }

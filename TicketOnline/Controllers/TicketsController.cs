@@ -105,5 +105,10 @@ namespace TicketOnline.Controllers
         {
             return _context.Tickets.Any(e => e.Id == id);
         }
+        [HttpGet("order/{orderid}")]
+        public IEnumerable<Ticket> GetTicketsByOrderId(string orderId)
+        {
+            return _context.Tickets.Where(t => t.OrderId == orderId).ToList();
+        }
     }
 }
