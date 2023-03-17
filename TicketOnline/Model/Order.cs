@@ -8,7 +8,9 @@ namespace TicketOnline.Data
     public class Order
     {
         [Key]
-        public string Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        public string? Id { get; set; }
         [Required]
         public string CustomerId { get; set; }
         [ForeignKey("CustomerId")]
@@ -16,7 +18,7 @@ namespace TicketOnline.Data
         [DataType(DataType.Currency)]
         public decimal Total { get; set; } = 0;
         public bool Status { get; set; }
-        public DateTime? CreateAt { get; set; } = DateTime.Now;
+        public DateTime? CreateAt { get; set; } = DateTime.UtcNow;
         //one to many
         public virtual ICollection<OrderItem>? OrderItems { get; set; }
         public virtual ICollection<Ticket>? Tickets { get; set; }

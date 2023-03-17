@@ -6,7 +6,9 @@ namespace TicketOnline.Data
     public class ShowTime
     {
         [Key]
-        public string Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        public string? Id { get; set; }
         [Required]
         public string MovieId { get; set; }
         [ForeignKey("MovieId")]

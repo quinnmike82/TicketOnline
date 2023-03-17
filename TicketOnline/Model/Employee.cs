@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketOnline.Data
 {
     public class Employee
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         [Required]
         [DataType(DataType.PhoneNumber)]
@@ -25,7 +27,7 @@ namespace TicketOnline.Data
         [Required]
         public DateOnly StartDate { get; set; }
 
-        public DateTime CreateAt { get; set; } = DateTime.Now;
+        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdateAt { get; set; }
     }
 }

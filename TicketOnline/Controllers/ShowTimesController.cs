@@ -85,11 +85,10 @@ namespace TicketOnline.Controllers
 
             ShowTime showTime1 = new ShowTime()
             {
-                Id = showTime.Id,
                 MovieId = showTime.MovieId,
                 RoomNumberId = showTime.RoomNumberId,
                 StartTime = DateTime.Parse(showTime.StartTime).ToUniversalTime(),
-                EndTime = DateTime.Parse(showTime.StartTime).Add(movie.RunningTime.ToTimeSpan()).ToUniversalTime()
+                EndTime = DateTime.Parse(showTime.StartTime).Add(movie.RunTime.ToTimeSpan()).ToUniversalTime()
             };
             var check = await _context.ShowTimes.FirstOrDefaultAsync(s => s.RoomNumberId == showTime1.RoomNumberId && ( (s.StartTime.CompareTo(showTime1.StartTime) < 0 &&
                                                             s.EndTime.CompareTo(showTime1.StartTime) >= 0) || 
@@ -101,7 +100,7 @@ namespace TicketOnline.Controllers
             _context.ShowTimes.Add(showTime1);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetShowTime", new { id = showTime.Id }, showTime);
+            return CreatedAtAction("GetShowTime", new { id = showTime1.Id }, showTime);
         }
 
         // DELETE: api/ShowTimes/5

@@ -7,6 +7,8 @@ namespace TicketOnline.Data
     public class Seat
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public string Id { get; set; }
         [Required]
         public char RowName { get; set; }

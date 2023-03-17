@@ -80,24 +80,37 @@ namespace TicketOnline.Controllers
         public async Task<ActionResult<Movie>> PostMovie(MovieCreate movie)
         {
             Movie movie1 = new Movie() {
-                Id = movie.Id,
                 Name = movie.Name,
                 Title = movie.Title,
                 Director = movie.Director,
-                Genre = movie.Genre,
+                GenreId = movie.GenreId,
                 Cast = movie.Cast,
                 ReleaseDate = DateOnly.Parse(movie.ReleaseDate),
-                RunningTime = TimeOnly.Parse(movie.RunningTime)
+                RunTime = TimeOnly.Parse(movie.RunTime),
+                Adult = movie.Adult,
+                Vote_average = movie.Vote_average,
+                BackdropPath = movie.BackdropPath,
+                Budget = movie.Budget,
+                HomePage = movie.HomePage,
+                Language = movie.Language,
+                Overview = movie.Overview,
+                Popularity = movie.Popularity,
+                PosterPath = movie.PosterPath,
+                Revenue = movie.Revenue,
+                Status = movie.Status,
+                Tagline = movie.Tagline,
+                Video = movie.Video,
+                Vote_count = movie.Vote_count
             };
             _context.Movies.Add(movie1);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
+            return CreatedAtAction("GetMovie", new { id = movie1.Id }, movie1);
         }
 
         // DELETE: api/Movies/5
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteMovie(int id)
+        public async Task<IActionResult> DeleteMovie(string id)
         {
             var movie = await _context.Movies.FindAsync(id);
             if (movie == null)

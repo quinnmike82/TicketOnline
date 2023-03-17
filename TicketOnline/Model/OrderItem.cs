@@ -6,7 +6,9 @@ namespace TicketOnline.Data
     public class OrderItem
     {
         [Key]
-        public string Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        public string? Id { get; set; }
         [Required]
         public string OrderId { get; set; }
         [ForeignKey("OrderId")]

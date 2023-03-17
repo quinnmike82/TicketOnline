@@ -49,7 +49,6 @@ namespace DOC_SYS.Controllers
             user.Name = request.FullName;
             user.Dob = DateOnly.Parse(request.Dob);
             user.PhoneNumber = request.PhoneNumber;
-            user.Id = request.Id;
             _context.Customers.Add(user);
             await _context.SaveChangesAsync();
             return StatusCode(201,user);

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TicketOnline.Data;
+using TicketOnline.Model;
 
 namespace TicketOnline.Controllers
 {
@@ -77,12 +78,24 @@ namespace TicketOnline.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> PostEmployee(EmpDTO employee)
         {
-            _context.Employees.Add(employee);
+            Employee employee1 = new Employee()
+            {
+                Address = employee.Address,
+                Cid = employee.Cid,
+                Email = employee.Email,
+                Dob = DateOnly.Parse(employee.Dob),
+                Name = employee.Name,
+                PhoneNumber = employee.PhoneNumber,
+                Position = employee.Position,
+                StartDate = DateOnly.Parse(employee.StartDate),
+                CreateAt = DateTime.UtcNow
+            };
+            _context.Employees.Add(employee1);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            return CreatedAtAction("GetEmployee", new { id = employee1.Id }, employee1);
         }
 
         // DELETE: api/Employees/5

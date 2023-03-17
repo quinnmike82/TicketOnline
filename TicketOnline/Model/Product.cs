@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.SqlTypes;
 
 namespace TicketOnline.Data
@@ -6,7 +7,8 @@ namespace TicketOnline.Data
     public class Product
     {
         [Key]
-        public string Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string? Id { get; set; }
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }

@@ -7,6 +7,7 @@ namespace TicketOnline.Data
     public class Customer
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         [Required]
         [StringLength(50)]
@@ -26,8 +27,6 @@ namespace TicketOnline.Data
         public DateTime? CreateAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdateAt { get; set; }
         //one to many
-
-        public virtual ICollection<Order>? Orders { get; set; }
 
     }
 }

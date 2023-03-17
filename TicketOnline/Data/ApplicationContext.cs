@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TicketOnline.Model;
 
 namespace TicketOnline.Data
 {
@@ -18,6 +19,7 @@ namespace TicketOnline.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<ShowTime> ShowTimes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Genre> Genres { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>()
