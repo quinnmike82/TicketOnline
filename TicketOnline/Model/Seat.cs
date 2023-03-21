@@ -16,8 +16,8 @@ namespace TicketOnline.Data
         public int SeatNumber { get; set; }
         [Required]
         public int RoomNumberId { get; set; }
-        //[ForeignKey("RoomNumberId")]
-        //public virtual Room? Room { get; set; }
+        [ForeignKey("RoomNumberId")]
+        public virtual Room? Room { get; set; }
         //one to many
         public virtual ICollection<Ticket>? Tickets { get; set; }
     }

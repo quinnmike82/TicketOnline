@@ -94,7 +94,7 @@ namespace TicketOnline.Controllers
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        public async Task<IActionResult> DeleteOrder(string id)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null)

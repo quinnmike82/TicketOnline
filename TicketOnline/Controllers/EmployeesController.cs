@@ -32,7 +32,7 @@ namespace TicketOnline.Controllers
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public async Task<ActionResult<Employee>> GetEmployee(string id)
         {
             var employee = await _context.Employees.FindAsync(id);
 
@@ -100,7 +100,7 @@ namespace TicketOnline.Controllers
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee(string id)
         {
             var employee = await _context.Employees.FindAsync(id);
             if (employee == null)

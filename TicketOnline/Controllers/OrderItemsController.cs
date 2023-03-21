@@ -86,7 +86,7 @@ namespace TicketOnline.Controllers
 
         // DELETE: api/OrderItems/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrderItem(int id)
+        public async Task<IActionResult> DeleteOrderItem(string id)
         {
             var orderItem = await _context.OrderItems.FindAsync(id);
             if (orderItem == null)

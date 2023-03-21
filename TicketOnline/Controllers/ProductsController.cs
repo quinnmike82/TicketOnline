@@ -31,7 +31,7 @@ namespace TicketOnline.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<Product>> GetProduct(string id)
         {
             var product = await _context.Products.FindAsync(id);
 
@@ -87,7 +87,7 @@ namespace TicketOnline.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(string id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
