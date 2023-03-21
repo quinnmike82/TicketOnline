@@ -24,19 +24,19 @@ namespace DOC_SYS.Controllers
             _context = context;
         }
 
-        
+
         [HttpPost("register")]
         public async Task<ActionResult<CustomerDTO>> Register(CustomerDTO request)
         {
             string err = string.Empty;
-            
+
             var checkEmail = await _context.Customers.AnyAsync(x => x.Email == request.Email);
             var checkPhone = await _context.Customers.AnyAsync(x => x.PhoneNumber == request.PhoneNumber);
 
             if (checkEmail) err += "Existed email\n";
             if (checkPhone) err += "Existed phone\n";
 
-            if(err != string.Empty)
+            if (err != string.Empty)
                 return BadRequest(err);
 
             Customer user = new Customer();
@@ -51,23 +51,23 @@ namespace DOC_SYS.Controllers
             user.PhoneNumber = request.PhoneNumber;
             _context.Customers.Add(user);
             await _context.SaveChangesAsync();
-            return StatusCode(201,user);
+            return StatusCode(201, user);
         }
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(CustomerLogin request)
         {
             Customer user = new Customer();
-                user = await _context.Customers.FirstOrDefaultAsync(u => u.Email.Equals(request.Email));
-                if (user == null)
-                    return BadRequest("Email not existed!");
-            
-            
+            user = await _context.Customers.FirstOrDefaultAsync(u => u.Email.Equals(request.Email));
+            if (user == null)
+                return BadRequest("Email not existed!");
+
+
 
             if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
             {
                 return BadRequest("Wrong password!");
             }
-            
+
             string token = CreateToken(user);
             CookieOptions cookie = new CookieOptions
             {
@@ -75,9 +75,10 @@ namespace DOC_SYS.Controllers
                 Expires = DateTime.UtcNow.AddDays(1),
                 Secure = true,
             };
-            HttpContext.Response.Cookies.Append("Bearer",token, cookie);
-            
-            return Ok(token);
+            HttpContext.Response.Cookies.Append("Bearer", token, cookie);
+
+            //Return user and token
+            return Ok(user);
         }
 
         private string CreateToken(Customer user)

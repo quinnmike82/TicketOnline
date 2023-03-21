@@ -31,7 +31,7 @@ namespace TicketOnline.Controllers
 
         // GET: api/Movies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        public async Task<ActionResult<Movie>> GetMovie(string id)
         {
             var movie = await _context.Movies.FindAsync(id);
 
