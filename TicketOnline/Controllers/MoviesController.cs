@@ -26,7 +26,8 @@ namespace TicketOnline.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
         {
-            return await _context.Movies.ToListAsync();
+            
+            return await _context.Movies.Include(m => m.Showtimes).ToListAsync();
         }
 
         // GET: api/Movies/5
