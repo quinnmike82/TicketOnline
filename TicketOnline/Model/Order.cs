@@ -13,8 +13,8 @@ namespace TicketOnline.Data
         public string? Id { get; set; }
         [Required]
         public string CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
-        public virtual Customer? Customer { get; set; }
+        //[ForeignKey("CustomerId")]
+        //public virtual Customer? Customer { get; set; }
         [DataType(DataType.Currency)]
         public decimal Total { get; set; } = 0;
         public bool Status { get; set; }

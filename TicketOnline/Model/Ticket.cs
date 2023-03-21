@@ -12,15 +12,15 @@ namespace TicketOnline.Data
         public string? Id { get; set; }
         [Required]
         public string OrderId { get; set; }
-        [ForeignKey("OrderId")]
-        public virtual Order? Order { get; set; }
+        //[ForeignKey("OrderId")]
+        //public virtual Order? Order { get; set; }
         public readonly SqlMoney Price = 70000;
         [Required]
         public string SeatId { get; set; }
         [Required]
         public string ShowtimeId { get; set; }
-        [ForeignKey("ShowtimeId")]
-        public virtual ShowTime? ShowTime { get; set; }
-        public virtual Seat? Seat { get; set; }
+        //[ForeignKey("ShowtimeId")]
+        //public virtual ShowTime? ShowTime { get; set; }
+        //public virtual Seat? Seat { get; set; }
     }
 }

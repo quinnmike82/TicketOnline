@@ -11,11 +11,11 @@ namespace TicketOnline.Data
         public string? Id { get; set; }
         [Required]
         public string MovieId { get; set; }
-        [ForeignKey("MovieId")]
-        public virtual Movie? Movie { get; set; }
+        //[ForeignKey("MovieId")]
+        //public virtual Movie? Movie { get; set; }
         public int RoomNumberId { get; set; }
-        [ForeignKey("RoomNumberId")]
-        public virtual Room? Room { get; set; }
+        //[ForeignKey("RoomNumberId")]
+        //public virtual Room? Room { get; set; }
         public DateTime StartTime { get; set; }
 
         public DateTime EndTime { get; set; }

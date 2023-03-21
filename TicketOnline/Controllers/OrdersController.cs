@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TicketOnline.Data;
+using TicketOnline.Model;
 
 namespace TicketOnline.Controllers
 {
@@ -77,12 +78,18 @@ namespace TicketOnline.Controllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<Order>> PostOrder(OrderCreate order)
         {
-            _context.Orders.Add(order);
+            Order order1 = new Order()
+            {
+                CustomerId = order.CustomerId,
+                Status = order.Status,
+                Total = order.Total
+            };
+            _context.Orders.Add(order1);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            return CreatedAtAction("GetOrder", new { id = order1.Id }, order);
         }
 
         // DELETE: api/Orders/5

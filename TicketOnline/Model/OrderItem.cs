@@ -11,12 +11,12 @@ namespace TicketOnline.Data
         public string? Id { get; set; }
         [Required]
         public string OrderId { get; set; }
-        [ForeignKey("OrderId")]
-        public virtual Order? Order { get; set; }
-        [Required]
+        //[ForeignKey("OrderId")]
+        //public virtual Order? Order { get; set; }
+        //[Required]
         public string ProductId { get; set; }
-        [ForeignKey("ProductId")]
-        public virtual Product? Product { get; set; }
+        //[ForeignKey("ProductId")]
+        //public virtual Product? Product { get; set; }
         public decimal Quantity { get; set; }
 
     }
