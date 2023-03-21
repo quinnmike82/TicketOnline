@@ -33,7 +33,7 @@ namespace TicketOnline.Controllers
 
         // GET: api/ShowTimes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ShowTime>> GetShowTime(int id)
+        public async Task<ActionResult<ShowTime>> GetShowTime(string id)
         {
             var showTime = await _context.ShowTimes.FindAsync(id);
 
@@ -105,7 +105,7 @@ namespace TicketOnline.Controllers
 
         // DELETE: api/ShowTimes/5
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteShowTime(int id)
+        public async Task<IActionResult> DeleteShowTime(string id)
         {
             var showTime = await _context.ShowTimes.FindAsync(id);
             if (showTime == null)
@@ -133,7 +133,7 @@ namespace TicketOnline.Controllers
         public IEnumerable<ShowTime> GetShowTimeForWeek()
         {
             DateTime today = DateTime.Today;
-            DateTime weekAfter = today.AddDays(7);
+            DateTime weekAfter = today.AddDays(14);
 
             var showtimes = _context.ShowTimes
                                   .Where(s => s.StartTime.CompareTo(today.ToUniversalTime()) >= 0 && s.StartTime.CompareTo(weekAfter.ToUniversalTime()) <= 0)

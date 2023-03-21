@@ -34,7 +34,7 @@ namespace TicketOnline.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<Customer>> GetCustomer(string id)
         {
             var customer = await _context.Customers.FindAsync(id);
 
@@ -91,7 +91,7 @@ namespace TicketOnline.Controllers
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCustomer(int id)
+        public async Task<IActionResult> DeleteCustomer(string id)
         {
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null)

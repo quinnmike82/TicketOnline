@@ -31,7 +31,7 @@ namespace TicketOnline.Controllers
 
         // GET: api/Seats/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Seat>> GetSeat(int id)
+        public async Task<ActionResult<Seat>> GetSeat(string id)
         {
             var seat = await _context.Seats.FindAsync(id);
 
