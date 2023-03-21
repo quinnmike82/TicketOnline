@@ -7,6 +7,7 @@ using System.Text;
 using TicketOnline.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+var AllowSpecific = "*";
 
 // Add services to the container.
 
@@ -25,6 +26,18 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowSpecific,
+                      builder =>
+                      {
+                          builder.WithOrigins("http://localhost:5174", "http://localhost:5174")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+
+                      });
+});
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -66,9 +79,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors(AllowSpecific);
 
 app.Run();
