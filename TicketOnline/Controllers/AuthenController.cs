@@ -76,6 +76,7 @@ namespace DOC_SYS.Controllers
                 Secure = true,
             };
             HttpContext.Response.Cookies.Append("Bearer", token, cookie);
+            HttpContext.Response.Cookies.Append("customerid", user.Id);
 
             //Return user and token
             return Ok(user);
@@ -87,7 +88,7 @@ namespace DOC_SYS.Controllers
             {
                 new Claim(ClaimTypes.Name, user.Email),
                 user.Email == "admin@gmail.com" ? new Claim(ClaimTypes.Role, "Admin") : new Claim(ClaimTypes.Role, "Customer"),
-                new Claim("userid", user.Id)
+                new Claim("customerid", user.Id)
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
                 _configuration.GetSection("AppSettings:Token").Value));

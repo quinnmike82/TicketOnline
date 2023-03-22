@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TicketOnline.Data;
+using TicketOnline.Model;
 
 namespace TicketOnline.Controllers
 {
@@ -76,29 +78,49 @@ namespace TicketOnline.Controllers
 
         // POST: api/Tickets
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost, Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Ticket>> PostTicket(Ticket ticket)
+        [HttpPost("placeOrder"), Authorize]
+        public async Task<IActionResult> PostTicket(PlaceOrder ticket)
         {
-            _context.Tickets.Add(ticket);
+            var a = HttpContext.Request.Cookies["customerid"];
+            Order order = new Order() {
+                CustomerId = a,
+                Status = false,
+                Total = 0};
+            _context.Orders.Add(order);
+            TicketOrder ticketadd = ticket.Tickets;
+            var showtime = _context.ShowTimes.Find(ticketadd.ShowTimeId);
+            foreach(var item in ticketadd.Tickets)
+            {
+                var seat = _context.Seats.First(s => (s.SeatNumber == Int16.Parse(item.SeatNumber)) && (s.RowName == char.Parse(item.SeatRow)) && (s.RoomNumberId == showtime.RoomNumberId));
+                Ticket ticket1 = new Ticket()
+                {
+                    OrderId = order.Id,
+                    SeatId = seat.Id,
+                    ShowtimeId = ticketadd.ShowTimeId,
+                };
+                _context.Tickets.Add(ticket1);
+            }
+            if(ticket.Products != null)
+            foreach(var item in ticket.Products)
+            {
+                OrderItem orderItem = new OrderItem()
+                {
+                    OrderId = order.Id,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity
+                };
+                _context.OrderItems.Add(orderItem);
+            }
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTicket", new { id = ticket.Id }, ticket);
+            return Ok(order.Id);
         }
 
         // DELETE: api/Tickets/5
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTicket(string id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            _context.Tickets.Remove(ticket);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            var a = HttpContext.Request.Cookies["customerid"];
+            return Ok(a);
         }
 
         private bool TicketExists(string id)
