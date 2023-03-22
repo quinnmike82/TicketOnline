@@ -117,7 +117,7 @@ namespace TicketOnline.Controllers
                     money += product.Price * orderItem.Quantity;
                 _context.OrderItems.Add(orderItem);
             }
-            order.Total = money;
+            order.Total = (decimal)money;
             await _context.SaveChangesAsync();
             return Ok(order.Id);
         }
