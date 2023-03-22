@@ -16,7 +16,7 @@ namespace TicketOnline.Data
         [ForeignKey("CustomerId")]
         public virtual Customer? Customer { get; set; }
         [DataType(DataType.Currency)]
-        public decimal Total { get; set; } = 0;
+        public SqlMoney Total { get; set; } = 0;
         public bool Status { get; set; }
         public DateTime? CreateAt { get; set; } = DateTime.UtcNow;
         //one to many
