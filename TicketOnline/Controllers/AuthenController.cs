@@ -1,14 +1,12 @@
-﻿using TicketOnline.Data;
-using TicketOnline.Model;
-using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.Authorization;
+using TicketOnline.Data;
+using TicketOnline.Model;
 
 namespace DOC_SYS.Controllers
 
@@ -61,15 +59,14 @@ namespace DOC_SYS.Controllers
         {
             var token = HttpContext.Request.Cookies["Bearer"];
             //If token is null, generate it and return
-            if(token == null) return BadRequest("Token is null");
+            if (token == null) return BadRequest("Token is null");
 
             //Return token
             return Ok(
-                    new LoginResponse
-                    {
-                        user = null,
-                        token = token
-                    }
+                    new LoginResponse(
+                        await _context.Customers.FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name)),
+                        token
+                        )
                 );
         }
 
@@ -82,6 +79,8 @@ namespace DOC_SYS.Controllers
             if (user == null)
                 return BadRequest("Email not existed!");
 
+
+
             if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
             {
                 return BadRequest("Wrong password!");
@@ -93,24 +92,13 @@ namespace DOC_SYS.Controllers
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(1),
                 Secure = true,
-                Domain = ""
             };
             HttpContext.Response.Cookies.Append("Bearer", token, cookie);
             HttpContext.Response.Cookies.Append("customerid", user.Id);
 
-
-            //Return user and token
-            return Ok(new LoginResponse
-            {
-                user = new CustomerDTO
-                {
-                    Email = user.Email,
-                    FullName = user.Name,
-                    Dob = user.Dob.ToString(),
-                    PhoneNumber = user.PhoneNumber
-                },
-                token = token
-            });
+            return Ok(new LoginResponse(
+                    user, token
+                    ));
         }
 
         private string CreateToken(Customer user)

@@ -1,9 +1,17 @@
-﻿namespace TicketOnline.Model
+﻿using TicketOnline.Data;
+
+namespace TicketOnline.Model
 {
     public class LoginResponse
     {
-       public CustomerDTO user { get; set; }
-        
+        public LoginResponse(Customer user, string token)
+        {
+            this.user = user;
+            this.token = token;
+        }
+
+        public Customer user { get; set; }
+
         public string token { get; set; }
     }
 }

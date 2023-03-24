@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -81,6 +83,7 @@ namespace TicketOnline.Controllers
         [HttpPost("placeOrder"), Authorize]
         public async Task<IActionResult> PostTicket(PlaceOrder ticket)
         {
+            SqlMoney money = 0;
             var a = HttpContext.Request.Cookies["customerid"];
             Order order = new Order() {
                 CustomerId = a,
@@ -98,6 +101,7 @@ namespace TicketOnline.Controllers
                     SeatId = seat.Id,
                     ShowtimeId = ticketadd.ShowTimeId,
                 };
+                money += ticket1.Price;
                 _context.Tickets.Add(ticket1);
             }
             if(ticket.Products != null)
@@ -109,8 +113,11 @@ namespace TicketOnline.Controllers
                     ProductId = item.ProductId,
                     Quantity = item.Quantity
                 };
+                    var product = _context.Products.FirstOrDefault(p => p.Id == item.ProductId);
+                    money += product.Price * orderItem.Quantity;
                 _context.OrderItems.Add(orderItem);
             }
+            order.Total = (decimal)money;
             await _context.SaveChangesAsync();
             return Ok(order.Id);
         }
