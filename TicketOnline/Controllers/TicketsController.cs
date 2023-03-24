@@ -17,6 +17,7 @@ namespace TicketOnline.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TicketsController : ControllerBase
     {
         private readonly ApplicationContext _context;
@@ -80,7 +81,7 @@ namespace TicketOnline.Controllers
 
         // POST: api/Tickets
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("placeOrder"), Authorize]
+        [HttpPost("placeOrder")]
         public async Task<IActionResult> PostTicket(PlaceOrder ticket)
         {
             SqlMoney money = 0;
