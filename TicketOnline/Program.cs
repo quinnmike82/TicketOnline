@@ -7,7 +7,7 @@ using System.Text;
 using TicketOnline.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-var AllowSpecific = "*";
+var AllowSpecific = "_allowSpecificOrigins";
 
 // Add services to the container.
 
@@ -31,11 +31,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: AllowSpecific,
                       builder =>
                       {
-                          builder.WithOrigins("http://localhost:5174", "http://localhost:5174")
+                          builder.WithOrigins("http://localhost:5174", "http://localhost:5174", "http://localhost", "*")
                           .AllowAnyHeader()
-                          .AllowAnyMethod()
+                          .WithMethods("PUT", "POST", "GET", "PATCH", "OPTIONS")
                           .AllowCredentials();
-
                       });
 });
 
@@ -55,7 +54,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
         OnMessageReceived = context =>
         {
-
             context.Token = context.Request.Cookies["Bearer"];
 
 
@@ -68,6 +66,10 @@ builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(
     ));
 
 var app = builder.Build();
+
+app.UseCors(
+    AllowSpecific
+);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -82,6 +84,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors(AllowSpecific);
 
 app.Run();

@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DOC_SYS.Controllers
 
@@ -53,6 +54,26 @@ namespace DOC_SYS.Controllers
             await _context.SaveChangesAsync();
             return StatusCode(201, user);
         }
+
+        [HttpGet("token")]
+        [Authorize()]
+        public async Task<ActionResult<string>> GetToken()
+        {
+            var token = HttpContext.Request.Cookies["Bearer"];
+            //If token is null, generate it and return
+            if(token == null) return BadRequest("Token is null");
+
+            //Return token
+            return Ok(
+                    new LoginResponse
+                    {
+                        user = null,
+                        token = token
+                    }
+                );
+        }
+
+
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(CustomerLogin request)
         {
@@ -60,8 +81,6 @@ namespace DOC_SYS.Controllers
             user = await _context.Customers.FirstOrDefaultAsync(u => u.Email.Equals(request.Email));
             if (user == null)
                 return BadRequest("Email not existed!");
-
-
 
             if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
             {
@@ -74,12 +93,24 @@ namespace DOC_SYS.Controllers
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(1),
                 Secure = true,
+                Domain = ""
             };
             HttpContext.Response.Cookies.Append("Bearer", token, cookie);
             HttpContext.Response.Cookies.Append("customerid", user.Id);
 
+
             //Return user and token
-            return Ok(user);
+            return Ok(new LoginResponse
+            {
+                user = new CustomerDTO
+                {
+                    Email = user.Email,
+                    FullName = user.Name,
+                    Dob = user.Dob.ToString(),
+                    PhoneNumber = user.PhoneNumber
+                },
+                token = token
+            });
         }
 
         private string CreateToken(Customer user)
