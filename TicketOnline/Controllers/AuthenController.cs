@@ -1,14 +1,12 @@
-﻿using TicketOnline.Data;
-using TicketOnline.Model;
-using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using Newtonsoft.Json;
+using TicketOnline.Data;
+using TicketOnline.Model;
 
 namespace DOC_SYS.Controllers
 
@@ -54,6 +52,25 @@ namespace DOC_SYS.Controllers
             await _context.SaveChangesAsync();
             return StatusCode(201, user);
         }
+
+        [HttpGet("token")]
+        [Authorize()]
+        public async Task<ActionResult<string>> GetToken()
+        {
+            var token = HttpContext.Request.Cookies["Bearer"];
+            //If token is null, generate it and return
+            if (token == null) return BadRequest("Token is null");
+
+            //Return token
+            return Ok(
+                    new LoginResponse(
+                        await _context.Customers.FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name)),
+                        token
+                        )
+                );
+        }
+
+
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(CustomerLogin request)
         {
@@ -79,10 +96,9 @@ namespace DOC_SYS.Controllers
             HttpContext.Response.Cookies.Append("Bearer", token, cookie);
             HttpContext.Response.Cookies.Append("customerid", user.Id);
 
-            var data = new { user = user, token = token };
-            var json = JsonConvert.SerializeObject(data);
-            //Return user and token
-            return Ok(json);
+            return Ok(new LoginResponse(
+                    user, token
+                    ));
         }
 
         private string CreateToken(Customer user)
