@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using TicketOnline.Data;
 using TicketOnline.Model;
 
@@ -84,6 +85,9 @@ namespace TicketOnline.Controllers
         [HttpPost("placeOrder")]
         public async Task<IActionResult> PostTicket(PlaceOrder ticket)
         {
+            List<Product> products = new List<Product>();
+            List<OrderItem> orders = new List<OrderItem>();
+            List<Ticket> tickets = new List<Ticket>();
             SqlMoney money = 0;
             var a = HttpContext.Request.Cookies["customerid"];
             Order order = new Order() {
@@ -102,6 +106,7 @@ namespace TicketOnline.Controllers
                     SeatId = seat.Id,
                     ShowtimeId = ticketadd.ShowTimeId,
                 };
+                tickets.Add(ticket1);
                 money += ticket1.Price;
                 _context.Tickets.Add(ticket1);
             }
@@ -114,13 +119,19 @@ namespace TicketOnline.Controllers
                     ProductId = item.ProductId,
                     Quantity = item.Quantity
                 };
+                    orders.Add(orderItem);
                     var product = _context.Products.FirstOrDefault(p => p.Id == item.ProductId);
+                    products.Add(product);
                     money += product.Price * orderItem.Quantity;
                 _context.OrderItems.Add(orderItem);
             }
             order.Total = (decimal)money;
             await _context.SaveChangesAsync();
-            return Ok(order.Id);
+
+            var data = new { order = order, products = products, orderItems = orders, tickets = tickets };
+            var json = JsonConvert.SerializeObject(data);
+            
+            return Ok(json);
         }
 
         // DELETE: api/Tickets/5
