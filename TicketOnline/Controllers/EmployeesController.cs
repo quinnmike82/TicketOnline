@@ -47,14 +47,31 @@ namespace TicketOnline.Controllers
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(string id, Employee employee)
+        public async Task<IActionResult> PutEmployee(string id, EmpDTO employee)
         {
-            if (id != employee.Id)
-            {
-                return BadRequest();
-            }
+            var emp = await _context.Employees.FindAsync(id);
 
-            _context.Entry(employee).State = EntityState.Modified;
+            if (emp == null) { return  NotFound(); }
+
+            if (!string.IsNullOrEmpty(employee.Cid))
+                if (emp.Cid != employee.Cid) { emp.Cid = employee.Cid; }
+            if (!string.IsNullOrEmpty(employee.Name))
+                if (emp.Name != employee.Name) { emp.Name = employee.Name; }
+            if (!string.IsNullOrEmpty(employee.Email))
+                if (emp.Email != employee.Email) { emp.Email = employee.Email; }
+            if(!string.IsNullOrEmpty(employee.StartDate))
+                if(DateOnly.Parse(employee.StartDate) != emp.StartDate && employee.StartDate != null) { emp.StartDate = DateOnly.Parse(employee.StartDate); }
+            if (!string.IsNullOrEmpty(employee.Address))
+                if (emp.Address != employee.Address) { emp.Address = employee.Address; }
+            if (!string.IsNullOrEmpty(employee.PhoneNumber))
+                if (emp.PhoneNumber != employee.PhoneNumber) { emp.PhoneNumber = employee.PhoneNumber; }
+            if (!string.IsNullOrEmpty(employee.Position))
+                if (emp.Position != employee.Position && emp.Position != null) { emp.Position = employee.Position; }
+            if (!string.IsNullOrEmpty(employee.Dob))
+                if (emp.Dob != DateOnly.Parse(employee.Dob)) { emp.Dob = DateOnly.Parse(employee.Dob); }
+            emp.UpdateAt = DateTime.UtcNow;
+
+            _context.Entry(emp).State = EntityState.Modified;
 
             try
             {
@@ -72,7 +89,7 @@ namespace TicketOnline.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(emp);
         }
 
         // POST: api/Employees

@@ -47,14 +47,52 @@ namespace TicketOnline.Controllers
         // PUT: api/Movies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PutMovie(string id, Movie movie)
+        public async Task<IActionResult> PutMovie(string id, MovieCreate movie)
         {
-            if (id != movie.Id)
-            {
-                return BadRequest();
-            }
+            var movie1 = await _context.Movies.FindAsync(id);
 
-            _context.Entry(movie).State = EntityState.Modified;
+            if(movie1 == null) { return NotFound(); }
+
+            if(!string.IsNullOrEmpty(movie.Title))
+                 movie1.Title = movie1.Title;
+            if (!string.IsNullOrEmpty(movie.Name))
+                movie1.Name = movie.Name;
+            if (!string.IsNullOrEmpty(movie.Director))
+                movie1.Director = movie.Director;
+            if (!string.IsNullOrEmpty(movie.Cast))
+                movie1.Cast = movie.Cast;
+            if (!string.IsNullOrEmpty(movie.GenreId))
+                movie1.GenreId = movie.GenreId;
+            if (!string.IsNullOrEmpty(movie.Language))
+                movie1.Language = movie.Language;
+            if (!string.IsNullOrEmpty(movie.ReleaseDate))
+                movie1.ReleaseDate = DateOnly.Parse(movie.ReleaseDate);
+            if (!string.IsNullOrEmpty(movie.RunTime))
+                movie1.RunTime = TimeOnly.Parse(movie.RunTime);
+            if (!string.IsNullOrEmpty(movie.Tagline))
+                movie1.Tagline = movie1.Tagline;
+            if (!string.IsNullOrEmpty(movie.HomePage))
+                movie1.HomePage = movie.HomePage;
+            if (!string.IsNullOrEmpty(movie.Overview))
+                movie1.Overview = movie1.Overview;
+            if (!string.IsNullOrEmpty(movie.PosterPath))
+                movie1.PosterPath = movie.PosterPath;
+            if (!string.IsNullOrEmpty(movie.BackdropPath))
+                movie1.BackdropPath = movie.BackdropPath;
+            if (movie.Status != null) movie1.Status = (bool)movie.Status;
+            if(movie.Vote_count != null) movie1.Vote_count = (int)movie.Vote_count;
+            if (movie.Video != null) movie1.Video = (bool)movie.Video;
+            if (movie.Adult != null) movie1.Adult = (bool)movie.Adult;
+            if(movie.Revenue != null) movie1.Revenue = (int)movie.Revenue;
+            if(movie.Vote_average != null) movie1.Vote_average = (int)movie.Vote_average;
+            if(movie.Popularity != null) movie1.Popularity = (int)movie.Popularity;
+
+
+
+
+
+
+            _context.Entry(movie1).State = EntityState.Modified;
 
             try
             {
@@ -72,7 +110,7 @@ namespace TicketOnline.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(movie1);
         }
 
         // POST: api/Movies
@@ -88,20 +126,20 @@ namespace TicketOnline.Controllers
                 Cast = movie.Cast,
                 ReleaseDate = DateOnly.Parse(movie.ReleaseDate),
                 RunTime = TimeOnly.Parse(movie.RunTime),
-                Adult = movie.Adult,
-                Vote_average = movie.Vote_average,
+                Adult = (bool)movie.Adult,
+                Vote_average = (decimal)movie.Vote_average,
                 BackdropPath = movie.BackdropPath,
-                Budget = movie.Budget,
+                Budget = (int)movie.Budget,
                 HomePage = movie.HomePage,
                 Language = movie.Language,
                 Overview = movie.Overview,
-                Popularity = movie.Popularity,
+                Popularity = (decimal)movie.Popularity,
                 PosterPath = movie.PosterPath,
-                Revenue = movie.Revenue,
-                Status = movie.Status,
+                Revenue = (int)movie.Revenue,
+                Status = (bool)movie.Status,
                 Tagline = movie.Tagline,
-                Video = movie.Video,
-                Vote_count = movie.Vote_count
+                Video = (bool)movie.Video,
+                Vote_count = (int)movie.Vote_count
             };
             _context.Movies.Add(movie1);
             await _context.SaveChangesAsync();

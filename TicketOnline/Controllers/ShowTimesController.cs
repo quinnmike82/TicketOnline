@@ -48,14 +48,37 @@ namespace TicketOnline.Controllers
         // PUT: api/ShowTimes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PutShowTime(string id, ShowTime showTime)
+        public async Task<IActionResult> PutShowTime(string id, ShowTimeCreate showTime)
         {
-            if (id != showTime.Id)
-            {
-                return BadRequest();
-            }
+            var showtime2 = await _context.ShowTimes.FindAsync(id);
 
-            _context.Entry(showTime).State = EntityState.Modified;
+            if(showtime2 == null) { return NotFound(); }
+
+            var showtime1 = showtime2;
+
+
+            if(showTime.RoomNumberId != null)
+                if(showTime.RoomNumberId != showtime1.RoomNumberId) { showtime1.RoomNumberId = (int)showTime.RoomNumberId; }
+            if (showTime.StartTime != null)
+                if (DateTime.Parse(showTime.StartTime).ToUniversalTime() != showtime1.StartTime) { 
+                    showtime1.StartTime = DateTime.Parse(showTime.StartTime).ToUniversalTime();
+                    var movie = await _context.Movies.FindAsync(showtime1.MovieId);
+                    if(movie != null)
+                    showtime1.EndTime = DateTime.Parse(showTime.StartTime).Add(movie.RunTime.ToTimeSpan()).ToUniversalTime();
+                }
+            if (showTime.MovieId != null)
+                if (showTime.MovieId != showtime1.MovieId) { showtime1.MovieId = showTime.MovieId; }
+
+            var check = await _context.ShowTimes.FirstOrDefaultAsync(s => s.RoomNumberId == showtime2.RoomNumberId && ((s.StartTime.CompareTo(showtime2.StartTime) < 0 &&
+                                                            s.EndTime.CompareTo(showtime2.StartTime) >= 0 && s.Id != showtime2.Id) ||
+                                                            (s.StartTime.CompareTo(showtime2.EndTime) < 0 &&
+                                                            s.EndTime.CompareTo(showtime2.EndTime) >= 0 && s.Id != showtime2.Id)));
+            if (check != null)
+                return BadRequest();
+
+            showtime2 = showtime1 as ShowTime;
+
+            _context.Entry(showtime2).State = EntityState.Modified;
 
             try
             {
@@ -73,7 +96,7 @@ namespace TicketOnline.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(showtime2);
         }
 
         // POST: api/ShowTimes
@@ -86,7 +109,7 @@ namespace TicketOnline.Controllers
             ShowTime showTime1 = new ShowTime()
             {
                 MovieId = showTime.MovieId,
-                RoomNumberId = showTime.RoomNumberId,
+                RoomNumberId = (int)showTime.RoomNumberId,
                 StartTime = DateTime.Parse(showTime.StartTime).ToUniversalTime(),
                 EndTime = DateTime.Parse(showTime.StartTime).Add(movie.RunTime.ToTimeSpan()).ToUniversalTime()
             };
