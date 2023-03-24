@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
 
 namespace DOC_SYS.Controllers
 
@@ -78,8 +79,10 @@ namespace DOC_SYS.Controllers
             HttpContext.Response.Cookies.Append("Bearer", token, cookie);
             HttpContext.Response.Cookies.Append("customerid", user.Id);
 
+            var data = new { user = user, token = token };
+            var json = JsonConvert.SerializeObject(data);
             //Return user and token
-            return Ok(user);
+            return Ok(json);
         }
 
         private string CreateToken(Customer user)
