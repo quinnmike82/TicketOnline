@@ -92,9 +92,18 @@ namespace DOC_SYS.Controllers
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(1),
                 Secure = true,
+                SameSite = SameSiteMode.None,
+            };
+
+            CookieOptions userIdCookie = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(1),
+                Secure = true,
+                SameSite = SameSiteMode.None,
             };
             HttpContext.Response.Cookies.Append("Bearer", token, cookie);
-            HttpContext.Response.Cookies.Append("customerid", user.Id);
+            HttpContext.Response.Cookies.Append("customerid", user.Id, userIdCookie);
 
             return Ok(new LoginResponse(
                     user, token

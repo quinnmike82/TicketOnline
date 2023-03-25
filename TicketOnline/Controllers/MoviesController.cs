@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TicketOnline.Data;
@@ -26,7 +21,7 @@ namespace TicketOnline.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
         {
-            
+
             return await _context.Movies.Include(m => m.Showtimes).ToListAsync();
         }
 
@@ -51,10 +46,10 @@ namespace TicketOnline.Controllers
         {
             var movie1 = await _context.Movies.FindAsync(id);
 
-            if(movie1 == null) { return NotFound(); }
+            if (movie1 == null) { return NotFound(); }
 
-            if(!string.IsNullOrEmpty(movie.Title))
-                 movie1.Title = movie1.Title;
+            if (!string.IsNullOrEmpty(movie.Title))
+                movie1.Title = movie1.Title;
             if (!string.IsNullOrEmpty(movie.Name))
                 movie1.Name = movie.Name;
             if (!string.IsNullOrEmpty(movie.Director))
@@ -80,12 +75,12 @@ namespace TicketOnline.Controllers
             if (!string.IsNullOrEmpty(movie.BackdropPath))
                 movie1.BackdropPath = movie.BackdropPath;
             if (movie.Status != null) movie1.Status = (bool)movie.Status;
-            if(movie.Vote_count != null) movie1.Vote_count = (int)movie.Vote_count;
+            if (movie.Vote_count != null) movie1.Vote_count = (int)movie.Vote_count;
             if (movie.Video != null) movie1.Video = (bool)movie.Video;
             if (movie.Adult != null) movie1.Adult = (bool)movie.Adult;
-            if(movie.Revenue != null) movie1.Revenue = (int)movie.Revenue;
-            if(movie.Vote_average != null) movie1.Vote_average = (int)movie.Vote_average;
-            if(movie.Popularity != null) movie1.Popularity = (int)movie.Popularity;
+            if (movie.Revenue != null) movie1.Revenue = (int)movie.Revenue;
+            if (movie.Vote_average != null) movie1.Vote_average = (int)movie.Vote_average;
+            if (movie.Popularity != null) movie1.Popularity = (int)movie.Popularity;
 
 
 
@@ -118,33 +113,45 @@ namespace TicketOnline.Controllers
         [HttpPost, Authorize(Roles = "Admin")]
         public async Task<ActionResult<Movie>> PostMovie(MovieCreate movie)
         {
-            Movie movie1 = new Movie() {
-                Name = movie.Name,
-                Title = movie.Title,
-                Director = movie.Director,
-                GenreId = movie.GenreId,
-                Cast = movie.Cast,
-                ReleaseDate = DateOnly.Parse(movie.ReleaseDate),
-                RunTime = TimeOnly.Parse(movie.RunTime),
-                Adult = (bool)movie.Adult,
-                Vote_average = (decimal)movie.Vote_average,
-                BackdropPath = movie.BackdropPath,
-                Budget = (int)movie.Budget,
-                HomePage = movie.HomePage,
-                Language = movie.Language,
-                Overview = movie.Overview,
-                Popularity = (decimal)movie.Popularity,
-                PosterPath = movie.PosterPath,
-                Revenue = (int)movie.Revenue,
-                Status = (bool)movie.Status,
-                Tagline = movie.Tagline,
-                Video = (bool)movie.Video,
-                Vote_count = (int)movie.Vote_count
-            };
-            _context.Movies.Add(movie1);
-            await _context.SaveChangesAsync();
+            try
+            {
 
-            return CreatedAtAction("GetMovie", new { id = movie1.Id }, movie1);
+                Movie movie1 = new Movie()
+                {
+                    Name = movie.Name,
+                    Title = movie.Title,
+                    Director = movie.Director,
+                    GenreId = movie.GenreId,
+                    Cast = movie.Cast,
+                    ReleaseDate = DateOnly.Parse(movie.ReleaseDate),
+                    RunTime = TimeOnly.Parse(movie.RunTime),
+                    Adult = (bool)movie.Adult,
+                    Vote_average = (decimal)movie.Vote_average,
+                    BackdropPath = movie.BackdropPath,
+                    Budget = (int)movie.Budget,
+                    HomePage = movie.HomePage,
+                    Language = movie.Language,
+                    Overview = movie.Overview,
+                    Popularity = (decimal)movie.Popularity,
+                    PosterPath = movie.PosterPath,
+                    Revenue = (int)movie.Revenue,
+                    Status = (bool)movie.Status,
+                    Tagline = movie.Tagline,
+                    Video = (bool)movie.Video,
+                    Vote_count = (int)movie.Vote_count
+                };
+
+                _context.Movies.Add(movie1);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetMovie", new { id = movie1.Id }, movie1);
+            }
+            catch (Exception ex)
+            {
+                //Log out the error
+                Console.WriteLine(ex.ToString());
+                throw ex;
+            }
         }
 
         // DELETE: api/Movies/5

@@ -33,7 +33,7 @@ builder.Services.AddCors(options =>
                       {
                           builder.WithOrigins("http://localhost:5174", "http://localhost:5174", "http://localhost", "*")
                           .AllowAnyHeader()
-                          .WithMethods("PUT", "POST", "GET", "PATCH", "OPTIONS")
+                          .WithMethods("PUT", "POST", "GET", "PATCH", "OPTIONS", "DELETE")
                           .AllowCredentials();
                       });
 });
@@ -55,8 +55,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         OnMessageReceived = context =>
         {
             context.Token = context.Request.Cookies["Bearer"];
-
-
+            Console.WriteLine("New req with cookies:" + context.Request.Cookies.ToString());
             return Task.CompletedTask;
         }
     };
