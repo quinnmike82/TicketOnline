@@ -49,7 +49,7 @@ namespace TicketOnline.Controllers
             if (movie1 == null) { return NotFound(); }
 
             if (!string.IsNullOrEmpty(movie.Title))
-                movie1.Title = movie1.Title;
+                movie1.Title = movie.Title;
             if (!string.IsNullOrEmpty(movie.Name))
                 movie1.Name = movie.Name;
             if (!string.IsNullOrEmpty(movie.Director))
