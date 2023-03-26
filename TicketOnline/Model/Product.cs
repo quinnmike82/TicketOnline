@@ -17,6 +17,6 @@ namespace TicketOnline.Data
         [Required]
         public string Image { get; set; }
         //one to many
-        public virtual ICollection<OrderItem>? OrderItems { get; set; }
+        //public virtual ICollection<OrderItem>? OrderItems { get; set; }
     }
 }

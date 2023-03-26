@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using NuGet.Protocol;
 using TicketOnline.Data;
 using TicketOnline.Model;
 
@@ -27,7 +29,14 @@ namespace TicketOnline.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _context.Orders.ToListAsync();
+            var orders =  await _context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.Product).Include(o => o.Tickets).ThenInclude(t => t.Seat).ToListAsync();
+            foreach (var order in orders)
+            {
+                foreach (var item in order.Tickets) {
+                    item.Seat.Tickets = null;
+                }
+            }
+            return orders;
         }
 
         // GET: api/Orders/5

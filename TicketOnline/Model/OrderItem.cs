@@ -15,8 +15,8 @@ namespace TicketOnline.Data
         //public virtual Order? Order { get; set; }
         //[Required]
         public string ProductId { get; set; }
-        //[ForeignKey("ProductId")]
-        //public virtual Product? Product { get; set; }
+        [ForeignKey("ProductId")]
+        public virtual Product? Product { get; set; }
         public decimal Quantity { get; set; }
 
     }

@@ -21,6 +21,6 @@ namespace TicketOnline.Data
         public string ShowtimeId { get; set; }
         //[ForeignKey("ShowtimeId")]
         //public virtual ShowTime? ShowTime { get; set; }
-        //public virtual Seat? Seat { get; set; }
+        public virtual Seat? Seat { get; set; }
     }
 }
