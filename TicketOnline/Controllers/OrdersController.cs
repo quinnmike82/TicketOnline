@@ -29,7 +29,7 @@ namespace TicketOnline.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            var orders =  await _context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.Product).Include(o => o.Tickets).ThenInclude(t => t.Seat).ToListAsync();
+            var orders =  await _context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.Product).Include(o => o.Tickets).ThenInclude(t => t.Seat).Include(o => o.Customer).ToListAsync();
             foreach (var order in orders)
             {
                 foreach (var item in order.Tickets) {
