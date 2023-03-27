@@ -128,6 +128,11 @@ namespace TicketOnline.Controllers
             order.Total = (decimal)money;
             await _context.SaveChangesAsync();
 
+            foreach(var item in tickets)
+            {
+                item.Seat = null;
+            }
+
             var data = new { order = order, products = products, orderItems = orders, tickets = tickets };
             var json = JsonConvert.SerializeObject(data);
             
